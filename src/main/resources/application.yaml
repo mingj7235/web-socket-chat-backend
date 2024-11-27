@@ -1,1 +1,21 @@
-spring.application.name=newserver
+server:
+  port: 7002
+
+springdoc:
+  swagger-ui:
+    enabled: true
+    operations-sorter: method
+spring:
+  datasource:
+    url: jdbc:mysql://localhost:3306/chat
+    username: root
+    password: 1234
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    show-sql: true
+    open-in-view: false
+token:
+  secret-key: "secret"
+  refresh-secret-key: "refresh-secret"
+  token-time: 300
+  refresh-token-time: 300
