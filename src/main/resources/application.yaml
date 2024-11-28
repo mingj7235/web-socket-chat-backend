@@ -14,6 +14,8 @@ spring:
   jpa:
     show-sql: true
     open-in-view: false
+    hibernate:
+      ddl-auto: create
 token:
   secret-key: "secret"
   refresh-secret-key: "refresh-secret"
