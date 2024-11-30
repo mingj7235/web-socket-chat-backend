@@ -16,7 +16,6 @@ import java.time.LocalDateTime
 @EntityListeners(AuditingEntityListener::class)
 class User(
     name: String,
-    credentials: UserCredentials,
 ) {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
