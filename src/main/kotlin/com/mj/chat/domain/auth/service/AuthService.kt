@@ -5,6 +5,7 @@ import com.mj.chat.domain.auth.model.response.CreateUserResponse
 import com.mj.chat.repository.UserRepository
 import com.mj.chat.repository.entity.User
 import com.mj.chat.repository.entity.UserCredentials
+import com.mj.chat.security.HashManager
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -12,6 +13,7 @@ import org.springframework.transaction.annotation.Transactional
 @Service
 class AuthService(
     private val userRepository: UserRepository,
+    private val hashManager: HashManager,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -48,8 +50,9 @@ class AuthService(
     private fun newUserCredentials(
         password: String,
         user: User,
-    ): UserCredentials {
-        // todo : hashing
-        TODO()
-    }
+    ): UserCredentials =
+        UserCredentials(
+            user = user,
+            password = hashManager.getHashingValue(password),
+        )
 }
