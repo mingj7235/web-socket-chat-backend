@@ -31,6 +31,10 @@ class User(
     val createdAt: LocalDateTime = LocalDateTime.now()
 
     @OneToOne(mappedBy = "user", cascade = [CascadeType.ALL])
-    var credentials: UserCredentials = credentials
+    var credentials: UserCredentials? = null
         protected set
+
+    fun updateCredentials(credentials: UserCredentials) {
+        this.credentials = credentials
+    }
 }
