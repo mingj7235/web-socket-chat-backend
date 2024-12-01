@@ -81,4 +81,6 @@ class JwtProvider(
     }
 
     fun decodedJwt(token: String): DecodedJWT = JWT.require(Algorithm.HMAC256(secretKey)).build().verify(token)
+
+    fun getUserFromToken(token: String): String = decodedJwt(token).subject
 }

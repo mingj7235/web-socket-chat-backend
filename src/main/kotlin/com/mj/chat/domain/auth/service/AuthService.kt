@@ -10,6 +10,7 @@ import com.mj.chat.repository.UserRepository
 import com.mj.chat.repository.entity.User
 import com.mj.chat.repository.entity.UserCredentials
 import com.mj.chat.security.HashManager
+import com.mj.chat.security.JwtProvider
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Service
 import org.springframework.transaction.annotation.Transactional
@@ -18,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional
 class AuthService(
     private val userRepository: UserRepository,
     private val hashManager: HashManager,
+    private val jwtProvider: JwtProvider,
 ) {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -68,8 +70,10 @@ class AuthService(
             }.orElseThrow {
                 throw CustomException(ErrorCode.NOT_EXIST_USER)
             }
-        return LoginResponse("token")
+        return LoginResponse(jwtProvider.createRefreshToken(request.name))
     }
+
+    fun getUsernameFromToken(token: String): String = jwtProvider.getUserFromToken(token)
 
     private fun newUser(name: String): User =
         User(
