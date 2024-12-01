@@ -6,6 +6,8 @@ enum class ErrorCode(
 ) : ErrorCodeInterface {
     USER_ALREADY_EXISTS(0, "user already exists"),
     USER_SAVED_FAILED(1, "user saved failed"),
+    NOT_EXIST_USER(2, "not exist user"),
+    NOT_MATCH_PASSWORD(3, "not match password"),
     ;
 
     override fun getCode(): Int = code

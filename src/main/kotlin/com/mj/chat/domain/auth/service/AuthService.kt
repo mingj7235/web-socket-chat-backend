@@ -3,7 +3,9 @@ package com.mj.chat.domain.auth.service
 import com.mj.chat.common.exception.CustomException
 import com.mj.chat.common.exception.ErrorCode
 import com.mj.chat.domain.auth.model.request.CreateUserRequest
+import com.mj.chat.domain.auth.model.request.LoginRequest
 import com.mj.chat.domain.auth.model.response.CreateUserResponse
+import com.mj.chat.domain.auth.model.response.LoginResponse
 import com.mj.chat.repository.UserRepository
 import com.mj.chat.repository.entity.User
 import com.mj.chat.repository.entity.UserCredentials
@@ -39,6 +41,34 @@ class AuthService(
         }
 
         return CreateUserResponse(request.name)
+    }
+
+    fun login(request: LoginRequest): LoginResponse {
+        val user = userRepository.findByName(request.name)
+
+        if (!user.isPresent) {
+            logger.error("user not found, request : $request")
+            throw CustomException(ErrorCode.NOT_EXIST_USER)
+        }
+
+        user
+            .map { u ->
+                val hashedPasword = hashManager.getHashingValue(request.password)
+
+                val credentials = u.credentials
+
+                if (credentials == null) {
+                    logger.error("user credentials not found, request : $request")
+                    throw CustomException(ErrorCode.NOT_EXIST_USER)
+                }
+
+                if (credentials.password != hashedPasword) {
+                    throw CustomException(ErrorCode.NOT_MATCH_PASSWORD)
+                }
+            }.orElseThrow {
+                throw CustomException(ErrorCode.NOT_EXIST_USER)
+            }
+        return LoginResponse("token")
     }
 
     private fun newUser(name: String): User =
