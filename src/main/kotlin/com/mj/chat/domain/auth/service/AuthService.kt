@@ -1,5 +1,7 @@
 package com.mj.chat.domain.auth.service
 
+import com.mj.chat.common.exception.CustomException
+import com.mj.chat.common.exception.ErrorCode
 import com.mj.chat.domain.auth.model.request.CreateUserRequest
 import com.mj.chat.domain.auth.model.response.CreateUserResponse
 import com.mj.chat.repository.UserRepository
@@ -22,7 +24,8 @@ class AuthService(
         val user = userRepository.findByName(request.name)
 
         if (user.isPresent) {
-            // todo : error handling
+            logger.error("user already exists, request : $request")
+            throw CustomException(ErrorCode.USER_ALREADY_EXISTS)
         }
 
         try {
@@ -30,13 +33,9 @@ class AuthService(
             val newCredentials = newUserCredentials(request.password, newUser)
             newUser.updateCredentials(newCredentials)
 
-            val savedUser = userRepository.save(newUser)
-
-            if (savedUser == null) {
-                // todo : error handling
-            }
+            userRepository.save(newUser)
         } catch (e: Exception) {
-            // todo : insert database error
+            throw CustomException(ErrorCode.USER_SAVED_FAILED)
         }
 
         return CreateUserResponse(request.name)
