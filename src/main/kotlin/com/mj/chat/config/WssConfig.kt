@@ -1,5 +1,6 @@
 package com.mj.chat.config
 
+import com.mj.chat.component.WssHandlerV1
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.socket.WebSocketHandler
@@ -10,14 +11,12 @@ import org.springframework.web.socket.handler.TextWebSocketHandler
 
 @Configuration
 @EnableWebSocket
-class WssConfig : WebSocketConfigurer {
-    // 임시 socket hander bean
-    @Bean
-    fun tempWebSocketHandler(): WebSocketHandler = object : TextWebSocketHandler() {}
-
+class WssConfig(
+    private val wssHandlerV1: WssHandlerV1,
+) : WebSocketConfigurer {
     override fun registerWebSocketHandlers(registry: WebSocketHandlerRegistry) {
         registry
-            .addHandler(tempWebSocketHandler(), "/ws/v1/chat")
+            .addHandler(wssHandlerV1, "/ws/v1/chat")
             .setAllowedOrigins("*")
     }
 }
